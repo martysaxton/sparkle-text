@@ -1,69 +1,166 @@
-# React + TypeScript + Vite
+## SparkleText
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Canvas-powered React component that emits tiny sparks from the actual edges of your rendered text glyphs (including inner holes like “O”, “a”, “B”). The real text stays in the DOM for accessibility; an overlaid canvas renders the particles.
 
-Currently, two official plugins are available:
+### Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Outward-emitting particles from true glyph edges and inner holes
+- Works with any font the browser can render
+- Accessible: underlying text remains selectable and readable
+- Zero dependencies beyond React
 
-## Expanding the ESLint configuration
+## Installation (bun)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+bun add sparkle-text
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Requires React 18+.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Optional fonts (examples use Fontsource):
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+bun add @fontsource/orbitron @fontsource/metal-mania @fontsource/cinzel-decorative @fontsource/codystar
 ```
+
+Then import a font once in your app entry:
+
+```ts
+import '@fontsource/orbitron'
+```
+
+## Quick start
+
+```tsx
+import React from 'react'
+import SparkleText from 'sparkle-text'
+
+export default function Example() {
+  return (
+    <div style={{ padding: 24 }}>
+      <SparkleText className="text-6xl font-black tracking-tight">SPARKLE</SparkleText>
+    </div>
+  )
+}
+```
+
+Without utility classes:
+
+```tsx
+<SparkleText style={{ fontSize: 72, fontWeight: 900, letterSpacing: -1 }}>Hello</SparkleText>
+```
+
+## API
+
+```ts
+type SparkleTextProps = {
+  children: string // required; text content
+  className?: string // optional; forwarded to wrapper
+  style?: React.CSSProperties // optional; inline styles for text wrapper
+  emissionRate?: number // particles/sec; default 180
+  speed?: number // px/sec; default 120
+  spread?: number // radians; default Math.PI / 6
+  gravity?: number // px/sec^2; downward positive; default 100
+  maxParticles?: number // global cap; default 1200
+  particleSize?: { min: number; max: number } // px radius; default { min: 0.7, max: 2.0 }
+  ttl?: { min: number; max: number } // seconds; default { min: 0.7, max: 1.6 }
+  colors?: string[] // CSS colors; random HSL if omitted
+  paused?: boolean // pause the animation; default false
+  canvasBleed?: number // extra px padding around text; default 48
+}
+```
+
+### Defaults
+
+- **emissionRate**: 180
+- **speed**: 120
+- **spread**: Math.PI / 6 (about 30° total cone)
+- **gravity**: 100
+- **maxParticles**: 1200
+- **particleSize**: { min: 0.7, max: 2.0 }
+- **ttl**: { min: 0.7, max: 1.6 }
+- **colors**: random HSL if not provided
+- **paused**: false
+- **canvasBleed**: 48
+
+### Notes
+
+- The component mirrors the computed font styles of its wrapper to an offscreen canvas to find glyph edges accurately.
+- The canvas overlay is `pointer-events: none`; your text stays interactive.
+- Multi-line text is supported; the canvas tracks the element’s size via `ResizeObserver`.
+
+## Accessibility
+
+- The text is rendered in the DOM inside the wrapper, so screen readers and selection work as usual.
+- The particle canvas sits behind the text visually (higher `z-index` but `pointer-events: none`).
+
+## SSR / Next.js
+
+- The particle system runs only in the browser. When using Next.js/App Router, mark the file as a client component:
+
+```tsx
+'use client'
+import SparkleText from 'sparkle-text'
+```
+
+## Performance tips
+
+- Lower **emissionRate** and/or **maxParticles** on slower devices.
+- Prefer smaller **particleSize** or shorter **ttl** to reduce fill cost.
+- Pause when offscreen using an IntersectionObserver in your app and the **paused** prop.
+
+## Development
+
+This repo includes a Vite demo app and Storybook for local development.
+
+### Prerequisites
+
+- Bun installed (`https://bun.sh`)
+
+### Install
+
+```bash
+bun install
+```
+
+### Run the demo (Vite)
+
+```bash
+bun run dev
+```
+
+Visit `http://localhost:5173`.
+
+### Storybook
+
+```bash
+bun run storybook
+```
+
+Visit `http://localhost:6006`. See `src/stories/SparkleText.stories.tsx`.
+
+### Lint
+
+```bash
+bun run lint
+```
+
+### Build
+
+```bash
+bun run build
+```
+
+Outputs to `dist/`. You can preview with:
+
+```bash
+bun run preview
+```
+
+## TypeScript
+
+Full TypeScript types are included. Props are exported via the `SparkleTextProps` type.
+
+## License
+
+TBD.
