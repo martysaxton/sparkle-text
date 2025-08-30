@@ -16,16 +16,18 @@ function App() {
         SPARKLE TEXT
       </SparkleText>
       <SparkleText
-        style={{ color: 'hsl(60, 100%, 40%)', fontFamily: 'Metal Mania' }}
+        style={{ color: 'hsl(60, 100%, 40%)', fontFamily: 'Metal Mania', marginBottom: 30 }}
         colors={['hsl(60, 100%, 95%)']}
         emissionRate={100_000}
-        maxParticles={20_000}
+        maxParticles={10_000}
         particleSize={{ min: 0.25, max: 1 }}
+        gravity={700}
+        ttl={{ min: 0.5, max: 0.9 }}
       >
         SPARKLE TEXT
       </SparkleText>
       <SparkleText emissionRate={20000} maxParticles={1000}>
-        ___underscore
+        ⭐️ &nbsp;&nbsp;&nbsp; 👽 &nbsp;&nbsp;&nbsp; ✨
       </SparkleText>
     </div>
   )
