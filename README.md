@@ -1,10 +1,10 @@
 ## SparkleText
 
-Canvas-powered React component that emits tiny sparks from the actual edges of your rendered text glyphs (including inner holes like “O”, “a”, “B”). The real text stays in the DOM for accessibility; an overlaid canvas renders the particles.
+Canvas-powered React component that emits tiny sparks from the actual edges of your rendered text glyphs. The real text stays in the DOM for accessibility; an overlaid canvas renders the particles.
 
 ### Features
 
-- Outward-emitting particles from true glyph edges and inner holes
+- Outward-emitting particles from true glyph edges
 - Works with any font the browser can render
 - Accessible: underlying text remains selectable and readable
 - Zero dependencies beyond React
@@ -163,4 +163,4 @@ Full TypeScript types are included. Props are exported via the `SparkleTextProps
 
 ## License
 
-TBD.
+MIT. See `LICENSE`.

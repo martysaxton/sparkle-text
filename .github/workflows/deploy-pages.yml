@@ -32,6 +32,14 @@ jobs:
       - name: Build Vite app
         run: bun run build -- --base=/${{ github.event.repository.name }}/
 
+      - name: Build Storybook static site
+        run: bun run build-storybook
+
+      - name: Move Storybook to dist/storybook
+        run: |
+          mkdir -p dist/storybook
+          rsync -a --delete storybook-static/ dist/storybook/
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
