@@ -1,8 +1,8 @@
 ## SparkleText
 
-![Demo](https://martysaxton.github.io/sparkle-text/)
+[Demo](https://martysaxton.github.io/sparkle-text/)
 
-![Storybook](https://martysaxton.github.io/sparkle-text/storybook/)
+[Storybook](https://martysaxton.github.io/sparkle-text/storybook/)
 
 Canvas-powered React component that emits tiny sparks from the actual edges of your rendered text glyphs. The real text stays in the DOM for accessibility; an overlaid canvas renders the particles.
 
