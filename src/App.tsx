@@ -47,7 +47,7 @@ function App() {
         emissionRate={100_000}
         maxParticles={10_000}
         particleSize={{ min: 0.25, max: 1 }}
-        gravity={700}
+        gravity={400}
         ttl={{ min: 0.5, max: 0.9 }}
       >
         SPARKLE TEXT

@@ -1,5 +1,9 @@
 ## SparkleText
 
+![Demo](https://martysaxton.github.io/sparkle-text/)
+
+![Storybook](https://martysaxton.github.io/sparkle-text/storybook/)
+
 Canvas-powered React component that emits tiny sparks from the actual edges of your rendered text glyphs. The real text stays in the DOM for accessibility; an overlaid canvas renders the particles.
 
 ### Features
@@ -57,31 +61,22 @@ type SparkleTextProps = {
   children: string // required; text content
   className?: string // optional; forwarded to wrapper
   style?: React.CSSProperties // optional; inline styles for text wrapper
-  emissionRate?: number // particles/sec; default 180
-  speed?: number // px/sec; default 120
-  spread?: number // radians; default Math.PI / 6
-  gravity?: number // px/sec^2; downward positive; default 100
-  maxParticles?: number // global cap; default 1200
-  particleSize?: { min: number; max: number } // px radius; default { min: 0.7, max: 2.0 }
-  ttl?: { min: number; max: number } // seconds; default { min: 0.7, max: 1.6 }
+  emissionRate?: number // particles/sec (see defaults in src/SparkleText.tsx)
+  speed?: number // px/sec
+  spread?: number // radians around outward normal
+  gravity?: number // px/sec^2; downward positive
+  maxParticles?: number // global live particle cap
+  particleSize?: { min: number; max: number } // px radius
+  ttl?: { min: number; max: number } // seconds
   colors?: string[] // CSS colors; random HSL if omitted
-  paused?: boolean // pause the animation; default false
-  canvasBleed?: number // extra px padding around text; default 48
+  paused?: boolean // pause the animation
+  canvasBleed?: number // extra px padding around text
 }
 ```
 
 ### Defaults
 
-- **emissionRate**: 180
-- **speed**: 120
-- **spread**: Math.PI / 6 (about 30° total cone)
-- **gravity**: 100
-- **maxParticles**: 1200
-- **particleSize**: { min: 0.7, max: 2.0 }
-- **ttl**: { min: 0.7, max: 1.6 }
-- **colors**: random HSL if not provided
-- **paused**: false
-- **canvasBleed**: 48
+Defaults are defined in a single TypeScript source of truth inside `src/SparkleText.tsx` and used by the component directly. Refer to that file for the authoritative values.
 
 ### Notes
 

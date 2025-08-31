@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { SPARKLE_DEFAULTS } from './SparkleText.defaults.ts'
 
 /**
  * SparkleText — Canvas particle system that emits tiny "sparks" from the *actual*
@@ -54,21 +55,25 @@ export type SparkleTextProps = {
   style?: React.CSSProperties
 }
 
-export default function SparkleText({
-  children,
-  className,
-  emissionRate = 180,
-  speed = 120,
-  spread = Math.PI / 6,
-  gravity = 100,
-  maxParticles = 1200,
-  particleSize = { min: 0.7, max: 2.0 },
-  ttl = { min: 0.7, max: 1.6 },
-  colors,
-  paused = false,
-  canvasBleed = 48,
-  style: styleProp,
-}: SparkleTextProps) {
+// Defaults are defined in a separate module to keep this file
+// exporting only a component for React Fast Refresh.
+
+export default function SparkleText(props: SparkleTextProps) {
+  const {
+    children,
+    className,
+    emissionRate = SPARKLE_DEFAULTS.emissionRate,
+    speed = SPARKLE_DEFAULTS.speed,
+    spread = SPARKLE_DEFAULTS.spread,
+    gravity = SPARKLE_DEFAULTS.gravity,
+    maxParticles = SPARKLE_DEFAULTS.maxParticles,
+    particleSize = SPARKLE_DEFAULTS.particleSize,
+    ttl = SPARKLE_DEFAULTS.ttl,
+    colors = SPARKLE_DEFAULTS.colors,
+    paused = SPARKLE_DEFAULTS.paused,
+    canvasBleed = SPARKLE_DEFAULTS.canvasBleed,
+    style: styleProp,
+  } = props
   const wrapRef = useRef<HTMLSpanElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
