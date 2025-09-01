@@ -52,6 +52,8 @@ export type SparkleTextProps = {
   paused?: boolean
   /** Extra off-canvas padding in CSS px to avoid visual clipping at edges. */
   canvasBleed?: number
+  /** If true, particles may travel over the filled glyphs (no inside culling). */
+  allowInside?: boolean
   style?: React.CSSProperties
 }
 
@@ -72,6 +74,7 @@ export default function SparkleText(props: SparkleTextProps) {
     colors = SPARKLE_DEFAULTS.colors,
     paused = SPARKLE_DEFAULTS.paused,
     canvasBleed = SPARKLE_DEFAULTS.canvasBleed,
+    allowInside = SPARKLE_DEFAULTS.allowInside,
     style: styleProp,
   } = props
   const wrapRef = useRef<HTMLSpanElement>(null)
@@ -379,11 +382,16 @@ export default function SparkleText(props: SparkleTextProps) {
           arr.splice(i, 1)
           continue
         }
-        // Cull if entering the glyph fill (keep only outside or hole regions)
+        // Cull if outside bounds; optionally cull when entering glyph fill
         const ix = p.x | 0,
           iy = p.y | 0
-        if (ix < 0 || iy < 0 || ix >= w || iy >= h || insideMask[iy * w + ix] === 1) {
+        if (ix < 0 || iy < 0 || ix >= w || iy >= h) {
           arr.splice(i, 1)
+          continue
+        }
+        if (!allowInside && insideMask[iy * w + ix] === 1) {
+          arr.splice(i, 1)
+          continue
         }
       }
 
@@ -405,7 +413,21 @@ export default function SparkleText(props: SparkleTextProps) {
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [ready, paused, emissionRate, speed, spread, gravity, maxParticles, particleSize.min, particleSize.max, ttl.min, ttl.max, colors])
+  }, [
+    ready,
+    paused,
+    emissionRate,
+    speed,
+    spread,
+    gravity,
+    maxParticles,
+    particleSize.min,
+    particleSize.max,
+    ttl.min,
+    ttl.max,
+    colors,
+    allowInside,
+  ])
 
   return (
     <span

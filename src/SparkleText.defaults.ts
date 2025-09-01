@@ -13,6 +13,7 @@ export const SPARKLE_DEFAULTS = {
   colors: undefined as string[] | undefined,
   paused: false,
   canvasBleed: 60,
+  allowInside: false,
 } as const
 
 export type SparkleDefaults = typeof SPARKLE_DEFAULTS

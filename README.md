@@ -71,18 +71,34 @@ type SparkleTextProps = {
   colors?: string[] // CSS colors; random HSL if omitted
   paused?: boolean // pause the animation
   canvasBleed?: number // extra px padding around text
+  allowInside?: boolean // if true, particles may pass over glyph fills
 }
 ```
 
 ### Defaults
 
-Defaults are defined in a single TypeScript source of truth inside `src/SparkleText.tsx` and used by the component directly. Refer to that file for the authoritative values.
+Defaults live in `src/SparkleText.defaults.ts` (`SPARKLE_DEFAULTS`) and are consumed by the component.
 
 ### Notes
 
 - The component mirrors the computed font styles of its wrapper to an offscreen canvas to find glyph edges accurately.
 - The canvas overlay is `pointer-events: none`; your text stays interactive.
 - Multi-line text is supported; the canvas tracks the element’s size via `ResizeObserver`.
+
+## How it works (glyph-edge emission)
+
+- Render the text into an offscreen canvas to obtain an alpha mask that exactly matches the DOM text (by mirroring the computed font style).
+- Convert that alpha into a binary inside mask (1 = glyph pixel, 0 = background).
+- Flood‑fill from the offscreen canvas borders through background pixels to label the true outside region. Any enclosed voids the flood‑fill cannot reach are treated as holes (the insides of letters like “O”, “a”, “B”).
+- Walk the inside mask to find edge pixels (inside pixels that touch outside or hole pixels). For each edge pixel, estimate a local outward normal using simple central‑difference gradients on the binary mask; flip the normal if a short look‑ahead shows it pointing the wrong way (toward fill instead of outside/hole).
+- Spawn particles at random edge points. Start each particle a few pixels along the normal, give it an initial velocity along that normal with a small angular spread, then integrate gravity.
+- By default, cull any particle that travels into the glyph fill so sparks remain strictly outside the letter shapes. If you set `allowInside` to `true`, this culling is skipped so particles can cross over the filled letter interior while still emitting from inner edges. Draw particles to the overlay canvas using additive blending for a subtle glow.
+
+Why this approach
+
+- Works with any font the browser can render; no path extraction or SDFs required.
+- Respects inner holes because outside vs hole regions are distinguished via flood‑fill.
+- Robust to layout changes: the mask is rebuilt on resize and after fonts finish loading.
 
 ## Accessibility
 

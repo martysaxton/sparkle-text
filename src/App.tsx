@@ -25,7 +25,7 @@ function App() {
         emissionRate={20000}
         maxParticles={1000}
         spread={Math.PI / 3}
-        particleSize={{ min: 0.2, max: 1 }}
+        particleSize={{ min: 0.5, max: 1 }}
       >
         SPARKLE TEXT
       </SparkleText>
@@ -37,7 +37,7 @@ function App() {
         gravity={150}
         speed={100}
         ttl={{ min: 0.5, max: 0.9 }}
-        particleSize={{ min: 0.2, max: 1 }}
+        particleSize={{ min: 0.4, max: 1 }}
       >
         SPARKLE TEXT
       </SparkleText>
